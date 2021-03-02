@@ -11,4 +11,10 @@ module.exports = (app) => {
         res.sendFile(path.join(__dirname, '../public/exercise.html'))
     
     })
+
+    app.get('/stats', (req, res) => {
+        console.log('hiot');
+        res.sendFile(path.join(__dirname, '../public/stats.html'))
+    
+    })
 }
