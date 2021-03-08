@@ -11,6 +11,21 @@ module.exports = (app) => {
                 res.json(err)
             });
     });
+    app.get(`/api/workouts/range`, (req, res) => {
+        console.log('hit')
+        db.Workout.find({})
+        .then(dbWorkouts => {
+            let inRange = [];
+            for(let i = 0; i < dbWorkouts.length; i++){
+                if(i === 6){
+                    break;
+                }
+                inRange.push(dbWorkouts[i]);
+            }
+            res.json(inRange);
+
+        })
+    });
 
     app.post('/api/workouts', ({ body }, res) => {
         db.Workout.create(body)
@@ -26,16 +41,18 @@ module.exports = (app) => {
 
         db.Exercise.create(req.body)
             .then((dbExercise) => {
-                db.Workout.findOneAndUpdate({ _id: req.params.id }, { $push: { exercises: dbExercise } }, { new: true })
+                db.Workout.findOneAndUpdate({ _id: req.params.id }, { $push: { exercises: dbExercise }, $inc: {totalDuration: dbExercise.duration} }, { new: true })
                     .then(dbWorkout => {
-                        dbWorkout.setTotalDuration();
+                        //dbWorkout.setTotalDuration();
+                        //dbWorkout.setTotalWeight();
                         console.log(dbWorkout)
                         res.json(dbWorkout);
                     })
             })
-
             .catch(err => {
                 res.json(err);
             })
     })
+
+    
 }
